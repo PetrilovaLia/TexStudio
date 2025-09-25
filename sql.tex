@@ -1,0 +1,39 @@
+\documentclass[a4paper,12pt]{article}
+
+% Slovenské prostredie
+\usepackage[slovak]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Okraje
+\usepackage[a4paper,margin=2cm]{geometry}
+
+% Lepšie odkazy
+\usepackage[hidelinks]{hyperref}
+
+% Rámčeky
+\usepackage[most]{tcolorbox}
+
+% Zvýraznenie kódu (vyžaduje kompiláciu s -shell-escape)
+\usepackage{minted}
+
+% Krajsie nadpisy (voliteľné)
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+
+\begin{document}
+	
+	\section{História databázových technológií}
+	
+	Prvé počítačové spracovanie údajov sa datuje do 50. rokov. Za ten čas vzniklo niekoľko databázových modelov, každý z nich ovplyvnil ďalší vývoj.
+	
+	Základným problémom bolo množstvo dát, ktoré bolo nutne fyzicky niekam uložiť, prístup k takémuto veľkému množstvu dát a časová náročnosť. \\
+	
+	Základom \textbf{hierarchického modelu} je stromová štruktúra, v ktoré sú prepojené v klasickom hierarchickom vzťahu rodič-dieťa. Medzi hlavné obmedzenia tohto modelu patrí v prípade zmeny nutnosť prepracovať celé štruktúry databáz. Vzhľadom na jednosmernosť vzťahu rodič-dieťa (väzba typu 1:n) je problematická realizácia komplikovanejších väzieb (typu m:n). Najznámejšou implementáciou bol systém IMS v rámci kozmického projektu Apollo, kde bolo potrebné organizovanie dvoch miliónov súčiastok. Tento databázový model je možné použiť ešte aj dnes, ako napríklad organizačné či skladové zásoby.
+	
+	Podstatou \textbf{sieťového modelu} je využitie smerov
+	
+	
+	
+	
+\end{document}
