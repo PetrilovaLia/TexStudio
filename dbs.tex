@@ -1,0 +1,78 @@
+\documentclass[a4paper,12pt]{article}
+
+% Slovenské prostredie
+\usepackage[slovak]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Okraje
+\usepackage[a4paper,margin=2cm]{geometry}
+
+% Lepšie odkazy
+\usepackage[hidelinks]{hyperref}
+
+% Rámčeky
+\usepackage[most]{tcolorbox}
+
+\tcbset{
+	frame code={},
+	colback=gray!5,
+	colframe=black,
+	boxrule=0.6pt,
+	arc=2mm,
+	outer arc=2mm,
+	boxsep=4pt,
+	left=6pt,right=6pt,top=6pt,bottom=6pt
+}
+
+% Zvýraznenie kódu (vyžaduje kompiláciu s -shell-escape)
+\usepackage{minted}
+
+% Krajsie nadpisy (voliteľné)
+\usepackage{titlesec}
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+
+\begin{document}
+	
+	\section{Úvod}
+	
+	\begin{tcolorbox}
+		programujem v Pythone
+		
+		stlač ENTER
+	\end{tcolorbox}
+	
+	Po stlačení klávesu ENTER sa okno zatvorí.
+	
+	\begin{tcolorbox}[title=print()]
+		\begin{itemize}
+			\item vypisuje hodnoty výrazov, ktoré sú uvedené medzi zátvorkami
+			\item hodnoty sa vypíšu oddelené medzerami
+		\end{itemize}
+	\end{tcolorbox}
+	
+	\begin{tcolorbox}[title=input()]
+		\begin{itemize}
+			\item funkcia načíta vstup od používateľa a vráti reťazec
+		\end{itemize}
+	\end{tcolorbox}
+	
+	Funkciu \texttt{input()} môžeme otestovať aj v priamom režime:
+	
+	\noindent
+	\begin{minted}[fontsize=\small]{python}
+		>>> input()
+		píšem nejaký text
+		'píšem nejaký text'
+	\end{minted}
+	
+	\section{Typy údajov}
+	
+	Typ môžeme zistiť pomocou funkcie \texttt{type()}:
+	
+	\begin{minted}[fontsize=\small]{python}
+		>>> type(42)
+		<class 'int'>
+	\end{minted}
+	
+\end{document}
