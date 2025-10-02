@@ -1,0 +1,69 @@
+\documentclass[a4paper,12pt]{report}
+
+% --- Slovenské nastavenia ---
+\usepackage[slovak]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+
+% --- Kapitoly ---
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+{\normalfont\bfseries}
+{\filright\MakeUppercase{KAPITOLA} \thechapter}
+{20pt}
+{\titlerule\vspace{1ex}\filright}
+[\vspace{1ex}\titlerule]
+
+% --- Rámčeky ---
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable}
+
+% rámček presne ako na obrázku
+\tcbset{
+	mybox/.style={
+		enhanced, breakable,
+		colback=white,        % biele pozadie
+		colframe=black,       % čierny rámček
+		boxrule=0.4pt,        % hrúbka čiary
+		sharp corners,        % ostré rohy
+		drop shadow,          % jemný tieň
+		fonttitle=\bfseries,  % tučný názov
+		colbacktitle=white,   % vypnutie šedého/čierneho podkladu titulku
+		coltitle=black,       % farba písma titulku
+		title={#1}
+	}
+}
+
+% --- Python kód v takom istom boxe ---
+\usepackage{minted} % potrebuje -shell-escape
+\tcbset{
+	codebox/.style={
+		mybox={#1},
+		listing engine=minted,
+		minted language=python,
+		minted options={fontsize=\small, breaklines}
+	}
+}
+
+% --- Dokument ---
+\begin{document}
+	
+	\chapter{Štart Pythonu}
+	
+	\begin{tcolorbox}[mybox={Ako ho získať}]
+		\begin{itemize}
+			\item zo stránky \texttt{https://www.python.org/} stiahnete najnovšiu verziu Pythonu
+			\item spustíte inštalačný program (napr. \texttt{python-3.11.5.exe})
+		\end{itemize}
+	\end{tcolorbox}
+	
+	\section{Prvý program}
+	
+	\begin{tcolorbox}[codebox={Ukážkový kód}]
+		print("Ahoj, svet!")
+		x = input("Zadaj svoje meno: ")
+		print("Vitaj,", x)
+	\end{tcolorbox}
+	
+\end{document}
