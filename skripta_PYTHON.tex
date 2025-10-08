@@ -1,10 +1,10 @@
-\documentclass[a4paper,12pt]{report}
+\documentclass[a4paper,11pt]{report}
 
 % --- Slovenské nastavenia ---
 \usepackage[slovak]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[a4paper,margin=2cm]{geometry}
 
 % --- Kapitoly ---
 \usepackage{titlesec}
@@ -19,51 +19,182 @@
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{breakable}
 
-% rámček presne ako na obrázku
-\tcbset{
-	mybox/.style={
-		enhanced, breakable,
-		colback=white,        % biele pozadie
-		colframe=black,       % čierny rámček
-		boxrule=0.4pt,        % hrúbka čiary
-		sharp corners,        % ostré rohy
-		drop shadow,          % jemný tieň
-		fonttitle=\bfseries,  % tučný názov
-		colbacktitle=white,   % vypnutie šedého/čierneho podkladu titulku
-		coltitle=black,       % farba písma titulku
-		title={#1}
-	}
-}
 
 % --- Python kód v takom istom boxe ---
 \usepackage{minted} % potrebuje -shell-escape
-\tcbset{
-	codebox/.style={
-		mybox={#1},
-		listing engine=minted,
-		minted language=python,
-		minted options={fontsize=\small, breaklines}
-	}
+\usepackage{float}
+\usepackage{subcaption}
+
+
+\setminted{
+	fontsize=\small,
+	xleftmargin=0pt,
+	xrightmargin=0pt,
+	autogobble
 }
 
 % --- Dokument ---
 \begin{document}
 	
-	\chapter{Štart Pythonu}
+	\chapter{Úvod do Pythonu}
 	
-	\begin{tcolorbox}[mybox={Ako ho získať}]
-		\begin{itemize}
-			\item zo stránky \texttt{https://www.python.org/} stiahnete najnovšiu verziu Pythonu
-			\item spustíte inštalačný program (napr. \texttt{python-3.11.5.exe})
-		\end{itemize}
-	\end{tcolorbox}
+	\subsection*{Čo je to programovanie?}
 	
-	\section{Prvý program}
+	Programovaním možno označiť celý proces od zadania nejakej úlohy programátorovi, analýzy úlohy (s pomocou odborníka v danej oblasti, ktorý nemusí byť programátor) až po zostavenie algoritmu (konkrétneho postupu) a jeho realizáciu prostredníctvom ľubovoľného programovacieho jazyka, teda \textbf{vytvorenie takého postupu (programu), ktorý je schopný počítač vykonať, a tým automatizovane a samostatne riešiť predložený problém}, ďalej tiež jeho testovanie, vylepšovanie a aktualizáciu. Úlohou programátora je aj tvorba dokumentácie, údržba, poskytovanie licencie pre ďalšie zariadenia a podobne.
 	
-	\begin{tcolorbox}[codebox={Ukážkový kód}]
-		print("Ahoj, svet!")
-		x = input("Zadaj svoje meno: ")
-		print("Vitaj,", x)
-	\end{tcolorbox}
+	\subsection*{Jazyk Python}
+	Python je moderný programovací jazyk:
+	\begin{itemize}
+		\item jeho autorom je Guido van Rossum (1989),
+		\item aplikácie v ňom vyvíjajú firmy ako Google, Netflix, Spotify, Instagram...
+		\item učí sa ako úvodný jazyk na mnohých univerzitách,
+		\item je \textbf{multiplatformový}, teda beží na rôznych platformách ako je Windows, Linux, Mac a tiež je to \textbf{open source} program.
+	\end{itemize} 
 	
+	Na rozdiel od iných programovacích jazykov, ktoré vyžadujú kompiláciu(C/C++), jazyk Python je interpreter, teda:
+	\begin{itemize}
+		\item nevytvára spustiteľný kód (.exe),
+		\item Python musí byť v počítači nainštalovaný,
+		\item interpreter umožňuje interaktívnu prácu s prostredím.
+	\end{itemize}
+	
+	\noindent\fbox{\begin{minipage}{\textwidth}{\textbf{ Ako ho získať}}
+			\begin{itemize}
+				\item zo stránky \textbf{https://www.python.org/} stiahnete najnovšiu verziu Pythonu
+				\item spustíte inštalačný program (napr. \textbf{python-3.13.7.exe})
+			\end{itemize}
+	\end{minipage}} \\
+
+	Spustenie je možné buď priamo v príkazovom riadku alebo prostredí IDLE(Python GUI), čo je vývojové prostredie. Po zadaní príkazu 'python' sa vytvára tzv. \textbf{prompt}. Teraz vieme využívať príkazy jazyka Python.
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		C:\Users\natali> python
+		Python 3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit 
+		(AMD64)] on win32 Type "help", "copyright", "credits" or "license" for more 
+		information.
+		>>>
+	\end{minted}
+	
+	\textbf{Ako to funguje}
+			\begin{itemize}
+				\item Python je interpreter a pracuje v niekoľkých možných režimoch,
+				\item teraz sme ho spustili v \textbf{príkazovom režime}: teda očakáva zadávanie príkazov do riadku a každý príkaz vyhodnotí, prípadne vypíše \textbf{chybovú hlášku},
+				\item toto interaktívne okno sa nazýva \textbf{shell}.
+			\end{itemize}
+
+
+	Python je v jednoduchosti kalkulačka a primárne tak aj funguje a teda môžeme zadávať matematické výrazy. Začneme s celými číslami a operáciami s nimi.
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		>>> 123 + 456
+		579
+		>>> 1 * 2 * 3 * 4 * 5 * 6
+		720
+	\end{minted}
+	
+	\noindent\fbox{\begin{minipage}{\textwidth}{\textbf{ Celé čísla - INTEGER}}
+			\begin{itemize}
+				\item rovnaký význam ako v matematike, využívame desiatkovú sústavu a môžu byť záporné
+				\item ich dĺžka je obmedzená len kapacitou pamäte Pythonu.
+				
+			\end{itemize}
+	\end{minipage}} \\
+	
+	Pracovať vieme rovnako ako v matematike aj s desatinnými číslami. 
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		>>> 22/7
+		3.142857142857143
+		>>> 0.1+0.2+0.3+0.4
+		1.0
+		>>> .1+.2+.3+.4
+		1.0
+		>>> 9999999999*99999999999.0
+		9.9999999989e+20
+	\end{minted}
+	
+	Python umožňuje ignorovať číslo pred desatinnou čiarkou a automaticky predpokladá, že je to nula. Všimnite si tretí príklad, ktorý je rovnaký ako tretí, ale čísla nezačínajú nulou, napriek tomu dostávame rovnaký výsledok. V poslednom príklade môžeme v zápise vidieť 99999999999.0, teda desatinné číslo a  Python automaticky vyhodnotí výsledok ako desatinné číslo. \\
+	
+	\noindent\fbox{\begin{minipage}{\textwidth}{\textbf{ Desatinné čísla - FLOAT}}
+			\begin{itemize}
+				\item pravidlá zápisu v jazyku python vyžadujú zápis pomocou desatinnej BODKY,
+				\item môžu vzniknúť ako výsledok inej matematickej operácie (delenie),
+				\item majú obmedzenú presnosť na niekoľko desatinných miest.				
+			\end{itemize}
+	\end{minipage}} \\
+	
+	Pre prácu s textami máme iný dátový typ, ktorý nám umožňuje prácu s tzv. 'textami', ktoré nazývame \textbf{znakové reťazce}. V prípade, že ich zapíšeme do príkazového riadka(shellu), Python ich vyhodnotí výpisom ich hodnoty.
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		>>> 'ahoj'
+		'ahoj'
+		>>> "hello world"
+		'hello world'
+		>>> 'úvodzovky "v" ret’azci'
+		'úvodzovky "v" ret’azci'
+		>>> "a tiež apostrofy 'v' ret’azci"
+		"a tiež apostrofy 'v' ret’azci"
+		>>>
+	\end{minted}
+	
+	\noindent\fbox{\begin{minipage}{\textwidth}{\textbf{ Znakové reťazce - STRING}}
+			\begin{itemize}
+				\item ich dĺžka je obmedzená len kapacitou pamäte Pythonu,
+				\item je možné ich zapisovať do 'apostrofov' alebo "úvodzoviek",
+					\begin{itemize}
+						\item oba zápisy sú ekvivalentné a je len na vás, ktorý budete používať,
+						\item reťazec však musí začínať a končiť tým istým znakom,
+					\end{itemize}
+				\item môže obsahovať špeciálne znaky, diakritiku			
+			\end{itemize}
+	\end{minipage}} \\
+	
+	V prostredí \textbf{Shell} dokážeme zadávať len výrazy a vypísať ich hodnoty. Pre písanie príkazov a tvorbu programov budeme ďalej využívať prostredie Visual Studio Code, ktoré je praktickejšie, prehľadnejšie a využívané v praxi. 
+	
+	\subsection*{Visual Studio Code}
+	
+	\noindent\fbox{\begin{minipage}{\textwidth}{\textbf{ Ako ho získať}}
+			\begin{itemize}
+				\item zo stránky \textbf{https://code.visualstudio.com/} stiahnete najnovšiu verziu podľa operačného systému,
+				\item spustíte inštalačný program (napr. \textbf{VSCodeUserSetup-x64-1.104.3.exe})
+			\end{itemize}
+	\end{minipage}} \\ \\
+	
+	Po spustení programu budete vidieť úvodnú obrazovku VS Code, v ktorom budeme pracovať. 
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\linewidth]{VSCode_uvod.png}
+		\caption{Spustenie VSC}
+		\label{fig:uvod}
+	\end{figure}
+	
+	Potrebujete si vytvoriť priečinok, do ktorého budete ukladať vaše python súbory. Takéto súbory musia mať príponu \textbf{.py}, aby mohli byť spustené, tieto súbory nazývame \textbf{skripty}. 
+	
+	\begin{figure}[H]
+		\centering
+		\subfloat[\centering]{{\includegraphics[width=0.45\linewidth]{open_folder.png} }}%
+		\qquad
+		\subfloat[\centering]{{\includegraphics[width=0.45\linewidth]{folder.png} }}%
+		\label{fig:folders}%
+	\end{figure}
+	
+	Na obrázku (a) vidíte, ako v prostredí otvoríte váš priečinok a na obrázku (b) ako to bude po otvorení priečinku vyzerať. Vo vašom prípade tam súbory s príponou .py nebudú a bude súbor prázdny. Červenou je označená ikonka na vytvorenie nového súboru. 
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		# moj prvy program
+		print('Začíname programovať v Pythone')
+	\end{minted}
+	
+	Takýto program spustíme pravým kliknutím myši na \textbf{Run Python File In Terminal}. Otvorí sa nám terminál, v ktorom sa program spustí a vidíme nasledovný výpis. Ak by sme potrebovali z nejakého dôvodu program prerušiť, použijeme klávesovú skratku \textbf{Ctrl + C}. 
+
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		PS C:\Users\natal\Desktop\PYTHON\II> & C:/Users/natal/AppData/Local/Programs/Python/
+		Python313/python.exe c:/Users/natal/Desktop/PYTHON/II/prvy_program.py
+		Začíname programovať v Pythone
+	\end{minted}
+	
+	Keď sa bližšie pozrieme na náš prvý kód, všimneme si, že sa vypísal iba text v apostrofoch. Text 'moj prvy program' je totižto komentár. Pri programovaní sa často využívajú, pretože chceme zachovať funkciu, ale aktuálne len vytvárame program a nechceme spúšťať všetko napr. kvôli prehľadnosti výpisov atď. Na to slúži symbol \textbf{\#}, ktorý napíšeme pomocou klávesovej skratky \textbf{AltGr + x }. Symbol mriežky spôsobí, že všetko čo sa nachádza v danom riadku, program nevykoná. AK by sme potrebovali viacriadkový komentár, využijeme klávesovú skratku. 
+	
+	
+
 \end{document}
