@@ -1,39 +1,285 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,11pt]{report}
 
-% Slovenské prostredie
+% --- Slovenské nastavenia ---
 \usepackage[slovak]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-
-% Okraje
 \usepackage[a4paper,margin=2cm]{geometry}
 
-% Lepšie odkazy
-\usepackage[hidelinks]{hyperref}
-
-% Rámčeky
-\usepackage[most]{tcolorbox}
-
-% Zvýraznenie kódu (vyžaduje kompiláciu s -shell-escape)
-\usepackage{minted}
-
-% Krajsie nadpisy (voliteľné)
+% --- Kapitoly ---
 \usepackage{titlesec}
-\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\chapter}[display]
+{\normalfont\bfseries}
+{\filright\MakeUppercase{KAPITOLA} \thechapter}
+{20pt}
+{\titlerule\vspace{1ex}\filright}
+[\vspace{1ex}\titlerule]
 
+% --- Rámčeky ---
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable}
+
+
+% --- Python kód v takom istom boxe ---
+\usepackage{minted} % potrebuje -shell-escape
+\usepackage{float}
+\usepackage{subcaption}
+
+
+\setminted{
+	fontsize=\small,
+	xleftmargin=0pt,
+	xrightmargin=0pt,
+	autogobble
+}
+
+% --- Zvýraznenie SQL príkazov v texte ---
+\usepackage{xcolor}
+\usepackage{listings}
+
+% Definícia štýlu pre SQL príkazy v texte
+\newcommand{\sql}[1]{\texttt{\textcolor{blue!70!black}{#1}}}
+
+% --- Farby a štýl pre SQL zvýraznenie ---
+\usepackage{xcolor}
+\definecolor{sqlkeyword}{RGB}{0,51,153} % tmavomodrá pre príkazy
+\definecolor{sqlfunction}{RGB}{153,0,153} % fialová pre funkcie, ak chceš
+
+\newcommand{\sqlkw}[1]{\texttt{\textcolor{sqlkeyword}{#1}}}
+\newcommand{\sqlfn}[1]{\texttt{\textcolor{sqlfunction}{#1}}}
+
+
+% --- Dokument ---
 \begin{document}
+	%	\noindent\fbox{\begin{minipage}{\textwidth}{\textbf{ Ako ho získať}}
+			%			\begin{itemize}
+				%				\item zo stránky \textbf{https://www.python.org/} stiahnete najnovšiu verziu Pythonu
+				%				\item spustíte inštalačný program (napr. \textbf{python-3.13.7.exe})
+				%			\end{itemize}
+			%	\end{minipage}} \\
 	
-	\section{História databázových technológií}
+	\chapter{ÚVOD DO DATABÁZ}
 	
-	Prvé počítačové spracovanie údajov sa datuje do 50. rokov. Za ten čas vzniklo niekoľko databázových modelov, každý z nich ovplyvnil ďalší vývoj.
+	\subsection*{CREATE TABLE}
 	
-	Základným problémom bolo množstvo dát, ktoré bolo nutne fyzicky niekam uložiť, prístup k takémuto veľkému množstvu dát a časová náročnosť. \\
+	Aby sme však mohli využívať služby databázy, musíme najprv údaje z tejto tabuľky do nej dostať. Budeme to robiť v dvoch krokoch – najprv zostrojíme prázdnu tabuľku a potom ju naplníme dátami. Na skonštruovanie prázdnej tabuľky použijeme tento príkaz:
 	
-	Základom \textbf{hierarchického modelu} je stromová štruktúra, v ktoré sú prepojené v klasickom hierarchickom vzťahu rodič-dieťa. Medzi hlavné obmedzenia tohto modelu patrí v prípade zmeny nutnosť prepracovať celé štruktúry databáz. Vzhľadom na jednosmernosť vzťahu rodič-dieťa (väzba typu 1:n) je problematická realizácia komplikovanejších väzieb (typu m:n). Najznámejšou implementáciou bol systém IMS v rámci kozmického projektu Apollo, kde bolo potrebné organizovanie dvoch miliónov súčiastok. Tento databázový model je možné použiť ešte aj dnes, ako napríklad organizačné či skladové zásoby.
+	\begin{minted}[frame=single,framesep=5pt]{sql}
+		CREATE TABLE student (
+			meno VARCHAR(10),
+			priezvisko VARCHAR(15),
+			pohlavie CHAR(4),
+			datum_narodenia DATE,
+			rocnik INT,	
+			priemer DEC(3,2)
+		);
+	\end{minted}
 	
-	Podstatou \textbf{sieťového modelu} je využitie smerov
+	Pozrieme sa bližšie na syntax jazyka SQL. Reťazec \sqlkw{CREATE TABLE} je anglickým prekladom (a tak to obvykle bude aj naďalej) slovného spojenia „vytvor tabuľku“.
+	Nasleduje meno tabuľky \texttt{student}, ktoré sme si zvolili sami, a teda nie je súčasťou SQL. V okrúhlych zátvorkách sú potom vymenované stĺpce oddelené čiarkami.
+	Každý z nich má svoje meno (ktoré sme opäť zvolili my) a dátový typ. Dátové typy sú podobné tým, ktoré poznáte z jazyka Python. 
+	
+	\subsection*{DÁTOVÉ TYPY}
+	
+	\begin{itemize}
+		\item \sqlkw{VARCHAR(x)} alebo ekvivalentne \sqlkw{CHARACTER VARYING(x)} slúži na ukladanie ľubovoľných znakových reťazcov (stringov) dĺžky najviac x (pričom x má svoje obmedzenie), ale uloží len toľko znakov, koľko použijeme - vhodné použitie na mená, adresy, emaily,
+		\item \sqlkw{CHAR(x)} (alebo v neskrátenej podobe \sqlkw{CHARACTER(x)}) sa tiež používa na ukladanie reťazcov, tu však majú pevnú dĺžku x. Znamená, že každá hodnota v tomto stĺpci zaberá presne tých 'x' znakov, bez ohľadu na to, či ich reálne použiješ. Teda vždy zaberie rovnaké miesto v pamäti — 10 znakov, ako vidíte v kóde, nahradí tieto miesta prázdnym znakom - ideálne pre skratky štátov, kódy - najideálnejšie, keď poznáme presnú dĺžku vkladaných údajov (napr. PSČ),
+		\begin{minted}[frame=single,framesep=5pt]{sql}
+			CHAR(10)
+			'Eva       '
+		\end{minted}
+		\item \sqlkw{INT} (alebo neskrátene \sqlkw{INTEGER}) slúži na ukladanie celých čísel,
+		\item \sqlkw{DEC(x,y)} (alebo aj \sqlkw{DECIMAL(x,y), NUM(x,y) či NUMERIC(x,y)}) umožňuje uložiť desatinné čísla s celkovou dĺžkou x (počet cifier pred a za desatinnou bodkou/čiarkou) a počtom desatinných miest y,
+		\item \sqlkw{DATE} sa používa na ukladanie dátumov (s najviac štvorciferným rokom, čo úplne postačuje).
+	\end{itemize} 
+	
+	Popri nich existujú aj dátové typy pre čas (\sqlkw{TIME}), dátum a čas spolu (\sqlkw{TIMESTAMP}), ďalšie celočíselné a desatinné typy s rôznym rozsahom (\sqlkw{SMALLINT}, \sqlkw{BIGINT}, \sqlkw{REAL}, \sqlkw{DOUBLE}). \\
+	
+	Názvy stĺpcov ani tabuliek spravidla neobsahujú medzery. V prípade potreby ich možno nahradiť podčiarkovníkmi (\_) – ako v prípade stĺpca datum\_narodenia. Ak však na medzerách trváme, musíme príslušný názov písať v úvodzovkách (napr. "datum narodenia").  Z pochopiteľných dôvodov je obmedzená dĺžka týchto názvov (zvyčajne do 18 znakov). Neodporúčam, potom je nutné tieto názvy neustále uvádzať v úvodzovkách, čo môže viesť k chybám, v prípade ich zabudnutia. Z praktických dôvodov je teda vhodné sa im vyhýbať (napriek tomu ich budeme často používať :) aby ste si zvykli, že v praxi to existuje a ľudia to bohužiaľ stále používajú). Treba však povedať, že PostgreSQL nerozlišuje veľkosť písmen v príkazoch – okrem reťazcových hodnôt, kde na veľkosti, naopak, záleží. \\
+	
+	\noindent\textbf{Pri písaní príkazov budeme dodržiavať túto dohodu o veľkosti písmen:} \\
+	
+	\noindent\fbox{\begin{minipage}{\textwidth}
+						
+					
+		Veľkými písmenami budeme písať časti, ktoré sú súčasťou jazyka SQL (napr. \sqlkw{CREATE TABLE, VARCHAR, DATE, DEC, INT}).
+					
+		Malými písmenami budeme označovať časti, ktoré sme si zvolili sami (napr. názov tabuľky \texttt{student} alebo stĺpce \texttt{meno}, \texttt{priezvisko, datum\_narodenia, rocnik, priemer}).
+	\end{minipage}} \\
+	
+	V tomto okamihu máme v databáze vytvorenú prázdnu tabuľku. Nasleduje druhá fáza – jej naplnenie. Opäť poslúži SQL, a to takýmto príkazom (všimnime si pritom, že nezistený dátum narodenia u Jána Hlúpého sa premietol do prázdnej hodnoty, ktorú budeme označovať ako \sqlkw{NULL}):
+
+	\begin{minted}[frame=single,framesep=5pt]{sql}
+		INSERT INTO student (meno, priezvisko, pohlavie, datum_narodenia, rocnik, priemer)
+		VALUES
+		('Ján', 'Hraško', 'muž', '12.7.1987', 1, 1.83),
+		('Ružena', 'Šípová', 'žena', '1.2.1984', 1, 1.22),
+		('Aladár', 'Baba', 'muž', '22.1.1980', 2, 2.03),
+		('Ferdinand', 'Mravec', 'muž', '3.3.1984', 3, 1.00),
+		('Ján', 'Polienko', 'muž', '14.4.1982', 5, 2.28),
+		('Juraj', 'Trul’o', 'muž', '16.7.1979', 1, 3.00),
+		('Jana', 'Botková', 'žena', '21.9.1977', 4, 1.50),
+		('Dana', 'Botková', 'žena', '21.9.1977', 4, 1.40),
+		('Ján', 'Hlúpy', 'muž', NULL, 2, 3.00),
+		('Aladár', 'Miazga', 'muž', '22.12.1987', 3, 2.06),
+		('Mikuláš', 'Myšiak', 'muž', '6.6.1983', 5, 1.66),
+		('Donald', 'Káčer', 'muž', '7.10.1982', 5, 1.83),
+		('Jozef', 'Námorník', 'muž', '23.9.1981', 2, 2.90);
+	\end{minted} 
+	
+	Klauzula \sqlkw{INSERT} znamená „vložiť“, spojka \sqlkw{INTO} znamená „do“, \texttt{student} je meno tabuľky, do ktorej ideme ukladať dáta, v okrúhlych zátvorkách sú názvy stĺpcov tabuľky a \sqlkw{VALUES} znamená „hodnoty“.
+	Dokopy teda prikazujeme: „vložiť do tabuľky \texttt{student} hodnoty“. \\
+	
+	Nasledujú hodnoty – celé riadky, tzv. záznamy. Každý z nich je uzavretý v okrúhlych zátvorkách a navzájom sú oddelené čiarkami. Jednotlivé údaje v zázname – tzv. položky – sú tiež oddelené čiarkami. V každom zázname je presne toľko položiek, koľko stĺpcov má tabuľka. Ich poradie určuje, ktorá hodnota sa uloží do ktorého stĺpca (napríklad pri zázname ('Ján','Hraško','muž','12.7.1987',1,1.83) bude položka Ján uložená do stĺpca meno, Hraško do priezvisko, muž do pohlavie, 12.7.1987 do datum\_narodenia, 1 do rocnik a napokon 1.83 (tak ako v jazyku Python budeme používať desatinnú bodku) do stĺpca priemer). \\
+	
+	Z toho vyplýva, že položka a dátový typ stĺpca musia navzájom korešpondovať – nemôžeme napríklad hodnotu 12.7.1987 vložiť do stĺpca rocnik, ktorý je typu \sqlkw{INT}, pretože databázový systém by zahlásil chybu a príkaz by sa nevykonal. S dátovými typmi súvisí ešte jedna dohoda – číselné údaje (napr. \sqlkw{INT} či \sqlkw{DEC}) ani prázdnu hodnotu nepíšeme do apostrofov ' ', kým všetky ostatné áno. \\
+	
+	\chapter{VÝBER ZÁZNAMOV Z TABUĽKY}
+	
+	\subsection*{SELECT}
+	
+	Dáta sme do databázy uložili, ale ako sa k nim teraz dostať? Základným príkazom v jazyku SQL, ktorým vieme prečítať obsah našej tabuľky \texttt{student}, je takáto konštrukcia:
+	
+	\begin{minted}[frame=single,framesep=5pt]{sql}
+		SELECT *
+		FROM student;
+	\end{minted} 
+	
+	Klauzula \sqlkw{SELECT} znamená „vyber“ a \sqlkw{FROM} „z“. Hviezdičku \sqlkw{*} môžeme čítať ako \textbf{všetko}, takže celkovo tento príkaz hovorí „vyber všetko z tabuľky \texttt{student}“ (pod vybraním rozumieme len prečítanie). Takýto príkaz nazývame \textbf{dopyt}, ale častejšie \textbf{'selekt'}. Ako odpoveď naň v tomto prípade dostávame: \\
+	
+	\begin{tabular}{|l|l|l|l|c|c|}
+		\hline
+		MENO & PRIEZVISKO & POHLAVIE & DÁTUM NARODENIA & ROČNÍK & PRIEMER \\
+		\hline
+		Ján & Hraško & muž & 1987-07-12 & 1 & 1,83 \\
+		Ružena & Šípová & žena & 1984-02-01 & 1 & 1,22 \\
+		Aladár & Baba & muž & 1980-01-22 & 2 & 2,03 \\
+		Ferdinand & Mravec & muž & 1984-03-03 & 3 & 1,00 \\
+		Ján & Polienko & muž & 1982-04-14 & 5 & 2,28 \\
+		Juraj & Trul’o & muž & 1979-07-16 & 1 & 3,00 \\
+		Jana & Botková & žena & 1977-09-21 & 4 & 1,50 \\
+		Dana & Botková & žena & 1977-09-21 & 4 & 1,40 \\
+		Ján & Hlúpy & muž & NULL & 2 & 3,00 \\
+		Aladár & Miazga & muž & 1987-12-22 & 3 & 2,06 \\
+		Mikuláš & Myšiak & muž & 1983-06-06 & 5 & 1,66 \\
+		Donald & Káčer & muž & 1982-10-07 & 5 & 1,83 \\
+		Jozef & Námorník & muž & 1981-09-23 & 2 & 2,90 \\
+		\hline
+	\end{tabular} \\
+	
+	Výpis má formu tabuľky. V jej záhlaví sú mená stĺpcov, tak ako sme ich uviedli v definícii tabuľky, potom už nasledujú jednotlivé záznamy.
+	
+	Všimnime si ešte technické detaily – zmenu veľkosti písmen v názvoch stĺpcov (lebo neboli definované s úvodzovkami), inú formu údajov typu \sqlkw{DATE} a desatinnú čiarku namiesto bodky. Je to však len záležitosť výpisu.
+	
+	Využitie databáz je oveľa širšie – schopnosť zoradiť záznamy podľa hodnôt ľubovoľného stĺpca (dokonca aj podľa viacerých). Pri použití predošlého príkazu sú záznamy vypísané nezoradené a spravidla v poradí, v akom boli do tabuľky vložené. Ak chceme študentov zoradiť podľa hodnôt stĺpca \texttt{priezvisko}, príkaz doplníme na takýto tvar:
+	
+	\begin{minted}[frame=single,framesep=5pt]{sql}
+		SELECT *
+		FROM student
+		ORDER BY priezvisko;
+	\end{minted} 
+	
+	ekvivalentný zápis: 
+	
+	\begin{minted}[frame=single,framesep=5pt]{sql}
+		SELECT *
+		FROM student
+		ORDER BY 2;
+	\end{minted}
+	
+	Klauzula \sqlkw{ORDER BY} znamená doslova „poradie podľa“, nasleduje meno príslušného stĺpca alebo jeho poradové číslo. Odpoveď je v oboch prípadoch rovnaká: \\
+	
+	\begin{tabular}{|l|l|l|l|c|c|}
+		\hline
+		MENO & PRIEZVISKO & POHLAVIE & DÁTUM NARODENIA & ROČNÍK & PRIEMER \\
+		\hline
+		Aladár & Baba & muž & 1980-01-22 & 2 & 2,03 \\
+		Jana & Botková & žena & 1977-09-21 & 4 & 1,50 \\
+		Dana & Botková & žena & 1977-09-21 & 4 & 1,40 \\
+		Ján & Hlúpy & muž & NULL & 2 & 3,00 \\
+		Ján & Hraško & muž & 1987-07-12 & 1 & 1,83 \\
+		Donald & Káčer & muž & 1982-10-07 & 5 & 1,83 \\
+		Aladár & Miazga & muž & 1987-12-22 & 3 & 2,06 \\
+		Ferdinand & Mravec & muž & 1984-03-03 & 3 & 1,00 \\
+		Mikuláš & Myšiak & muž & 1983-06-06 & 5 & 1,66 \\
+		Jozef & Námorník & muž & 1981-09-23 & 2 & 2,90 \\
+		Ján & Polienko & muž & 1982-04-14 & 5 & 2,28 \\
+		Ružena & Šípová & žena & 1984-02-01 & 1 & 1,22 \\
+		Juraj & Trul’o & muž & 1979-07-16 & 1 & 3,00 \\
+		\hline
+	\end{tabular} \\
+	
+	Vidíme, že ku klasickému usporiadaniu podľa abecedy predsa len čosi chýba – aj keď sú Janka a Danka Botkové podobné ako vajce vajcu, predsa by sa mali vymeniť.
+	
+	Máme síce usporiadanie podľa priezviska ako doteraz, ale týmto stĺpcom nerozlíšené záznamy ešte potrebujeme zoradiť podľa hodnôt stĺpca meno. V SQL príkaze sa to prejaví takto:
+	
+	\begin{minted}[frame=single,framesep=5pt]{sql}
+		SELECT *
+		FROM student
+		ORDER BY priezvisko, meno;
+	\end{minted} 
+	
+	alebo
+	
+	\begin{minted}[frame=single,framesep=5pt]{sql}
+		SELECT *
+		FROM student
+		ORDER BY 2, 1;
+	\end{minted}
+	
+	Za klauzulou \sqlkw{ORDER BY} teda môže byť viacero stĺpcov, resp. ich poradových čísel, ktoré sú oddelené čiarkami.
+	
+	\begin{tabular}{|l|l|l|l|c|c|}
+		\hline
+		MENO & PRIEZVISKO & POHLAVIE & DÁTUM NARODENIA & ROČNÍK & PRIEMER \\
+		\hline
+		Aladár & Baba & muž & 1980-01-22 & 2 & 2,03 \\
+		Dana & Botková & žena & 1977-09-21 & 4 & 1,40 \\
+		Jana & Botková & žena & 1977-09-21 & 4 & 1,50 \\
+		Ján & Hlúpy & muž & NULL & 2 & 3,00 \\
+		Ján & Hraško & muž & 1987-07-12 & 1 & 1,83 \\
+		Donald & Káčer & muž & 1982-10-07 & 5 & 1,83 \\
+		Aladár & Miazga & muž & 1987-12-22 & 3 & 2,06 \\
+		Ferdinand & Mravec & muž & 1984-03-03 & 3 & 1,00 \\
+		Mikuláš & Myšiak & muž & 1983-06-06 & 5 & 1,66 \\
+		Jozef & Námorník & muž & 1981-09-23 & 2 & 2,90 \\
+		Ján & Polienko & muž & 1982-04-14 & 5 & 2,28 \\
+		Ružena & Šípová & žena & 1984-02-01 & 1 & 1,22 \\
+		Juraj & Trul’o & muž & 1979-07-16 & 1 & 3,00 \\
+		\hline
+	\end{tabular} \\
+	
+	Takýmto spôsobom dokážeme zoradiť výpis podľa ktorejkoľvek informácie, ktorú obsahuje tabuľka. Napríklad podľa dátumu narodenia, čo je v našej tabuľke štvrtý stĺpec:
+	
+	\begin{minted}[frame=single,framesep=5pt]{sql}
+		SELECT *
+		FROM student
+		ORDER BY 4;
+	\end{minted}
+	
+	\begin{tabular}{|l|l|l|l|c|c|}
+		\hline
+		MENO & PRIEZVISKO & POHLAVIE & DÁTUM NARODENIA & ROČNÍK & PRIEMER \\
+		\hline
+		Jana & Botková & žena & 1977-09-21 & 4 & 1,50 \\
+		Dana & Botková & žena & 1977-09-21 & 4 & 1,40 \\
+		Juraj & Trul’o & muž & 1979-07-16 & 1 & 3,00 \\
+		Aladár & Baba & muž & 1980-01-22 & 2 & 2,03 \\
+		Jozef & Námorník & muž & 1981-09-23 & 2 & 2,90 \\
+		Ján & Polienko & muž & 1982-04-14 & 5 & 2,28 \\
+		Donald & Káčer & muž & 1982-10-07 & 5 & 1,83 \\
+		Mikuláš & Myšiak & muž & 1983-06-06 & 5 & 1,66 \\
+		Ružena & Šípová & žena & 1984-02-01 & 1 & 1,22 \\
+		Ferdinand & Mravec & muž & 1984-03-03 & 3 & 1,00 \\
+		Ján & Hraško & muž & 1987-07-12 & 1 & 1,83 \\
+		Aladár & Miazga & muž & 1987-12-22 & 3 & 2,06 \\
+		Ján & Hlúpy & muž & NULL & 2 & 3,00 \\
+		\hline
+	\end{tabular}
 	
 	
+	Človek s neznámym dátumom narodenia je na chvoste, keďže prázdna hodnota sa pri usporadúvaní vždy správa, akoby bola najväčšia.
 	
+	Zoradenie od najmladšieho k najstaršiemu dostaneme tak, že v klauzule \sqlkw{ORDER BY} bezprostredne za príslušný stĺpec, resp. jeho číslo doplníme \sqlkw{DESC}, čo je skratka anglického slova \texttt{descending} – čiže „zostupne“. Teda: 
 	
 \end{document}
