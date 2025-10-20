@@ -195,6 +195,158 @@
 	
 	Keď sa bližšie pozrieme na náš prvý kód, všimneme si, že sa vypísal iba text v apostrofoch. Text 'moj prvy program' je totižto komentár. Pri programovaní sa často využívajú, pretože chceme zachovať funkciu, ale aktuálne len vytvárame program a nechceme spúšťať všetko napr. kvôli prehľadnosti výpisov atď. Na to slúži symbol \textbf{\#}, ktorý napíšeme pomocou klávesovej skratky \textbf{AltGr + x }. Symbol mriežky spôsobí, že všetko čo sa nachádza v danom riadku, program nevykoná. AK by sme potrebovali viacriadkový komentár, využijeme klávesovú skratku. 
 	
+	\chapter{CYKLUS FOR}
 	
+	Ak potrebujeme n-krát vypísať ten istý text, môžeme to zapísať napr. takto:
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		print('programujem v Pythone')
+		print('programujem v Pythone')
+		print('programujem v Pythone')
+		print('programujem v Pythone')
+		print('programujem v Pythone')
+	\end{minted}
+	
+	\noindent Namiesto zdĺhavého výpisu použijeme cyklus: 
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		pocet_opakovani = [1,2,3,4,5]
+		for vypisany_text in pocet_opakovani:
+		    print('programujem v Pythone')
+	\end{minted}
+	
+	\noindent Ako tento cyklus pracuje:
+	\begin{itemize}
+		\item do premennej \texttt{vypisany\_text} sa bude postupne priraďovať nasledovná hodnota zo zoznamu hodnôt
+		\item začíname s prvou hodnotou v zozname
+		\item pre každú hodnotu zo zoznamu sa vykonajú príkazy, ktoré sú v \textbf{tele cyklu}, t.j. tie príkazy, ktoré sú odsadené
+		\item v našom príklade sa päťkrát vypíše rovnaký text, hodnota iteračnej premennej alebo inak \textbf{premenná cyklu} - \texttt{vypisany\_text}, nemá
+		na tento výpis žiadny vplyv
+		\item všimnite si znak \texttt{‘:’} na konci riadka s \texttt{for} - ten je tu povinne, bez neho by to nefungovalo
+	\end{itemize}
+	
+	\noindent Telo cyklu \texttt{FOR}:
+	\begin{itemize}
+		\item tvoria ho príkazy, ktoré sa majú n-krát opakovať; definujú sa \textbf{odsadením} príslušných riadkov (min. jedna medzera, ideálne 4 = jeden tabulátor),
+		
+		\item ak telo cyklu obsahuje viac príkazov, všetky \textbf{musia} byť odsadené o rovnaký počet medzier,
+		
+		\item telo cyklu \textbf{nesmie} byť prázdne, musí obsahovať aspoň jeden príkaz
+		
+		\item niekedy sa môže hodiť \textbf{prázdny príkaz} \texttt{pass}, ktorý nerobí nič, len oznámi čitateľovi, že sme na telo cyklu
+		nezabudli, ale zatiaľ tam nechceme mať nič
+		
+	\end{itemize}
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		for i in 1,2,3:
+		    pass
+	\end{minted}
+	
+	\noindent Do výpisu tela cyklu sa často pridávajú "prázdne riadky", ktoré nemajú žiadny význam len sprehľadňujú výpis kódu, takto nejako to môže vyzerať: 
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		for vypis in 1, 1, 1:
+		    print('programujem v Pythone')
+		    print('~~~~~~~~~~~~~~~~~~~~~')
+		
+		programujem v Pythone
+		~~~~~~~~~~~~~~~~~~~~~
+		programujem v Pythone
+		~~~~~~~~~~~~~~~~~~~~~
+		programujem v Pythone
+		~~~~~~~~~~~~~~~~~~~~~
+	\end{minted}
+	
+	\noindent Ak by sa druhý riadok cyklu neodsadil, vyzeralo by to takto: 
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		for vypis in 1, 1, 1:
+		    print('programujem v Pythone')
+		print('~~~~~~~~~~~~~~~~~~~~~')
+		
+		programujem v Pythone
+		programujem v Pythone
+		programujem v Pythone
+		~~~~~~~~~~~~~~~~~~~~~
+	\end{minted}
+	
+	\noindent V tele nášho cyklu \texttt{for} vieme tak ako doteraz využívať premenné a to dokonca \textbf{premennú cyklu}, ktorú definujem len pre daný cyklus. Túto premennú si predstavte ako dočasnú pamäť, do ktorej si cyklus ukladá hodnoty, s ktorými pracuje a neskôr ich "zahodí"
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		cisla = [1,2,3,4,5]
+		for prem_cyklu in cisla:
+		    print(prem_cyklu)
+	\end{minted}
+	
+	\noindent A po spustení programu dostávame:
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		1
+		2
+		3
+		4
+		5
+	\end{minted}
+	
+	\noindent Pomocou cyklu \texttt{for} môžeme vypočítať mocniny daných čísel ako:
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		cisla = [2, 5, 7, 11, 13]
+		for x in cisla:
+		    x2 = x**2
+		    print('Druhá mocnina', x, 'je', x2)
+	\end{minted}
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		Druhá mocnina 2 je 4
+		Druhá mocnina 5 je 25
+		Druhá mocnina 7 je 49
+		Druhá mocnina 11 je 121
+		Druhá mocnina 13 je 169
+	\end{minted}
+	
+	\noindent Premenná cyklu môže nadobúdať hodnoty ľubovoľného typu. Pre výpočet odmocniny napríklad desatinné čísla (float):
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		cisla = [121, 23/7, 14, 9.0]
+		for x in cisla:
+		    x_odm = x**.5
+		print('Druhá mocnina', x, 'je', x2)
+	\end{minted}
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		Druhá odmocnina z čísla 121 je 11.0
+		Druhá odmocnina z čísla 3.2857142857142856 je 1.8126539343499315
+		Druhá odmocnina z čísla 14 je 3.7416573867739413
+		Druhá odmocnina z čísla 9.0 je 3.0
+	\end{minted}
+	
+	\noindent Zoznam poznáme aj ako znakový reťazec, teda môžeme pracovať aj s jednotlivými znakmi tohto reťazca:
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		for pismeno in 'Python':
+		    print(pismeno*10)
+
+	\end{minted}
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		for pismeno in 'P', 'y', 't', 'h', 'o', 'n':
+		print(pismeno*10)
+	\end{minted}
+	
+	\noindent Pre obe verzie kódu dostávame rovnaký výsledok:
+	
+	\begin{minted}[frame=single,framesep=5pt]{python}
+		PPPPPPPPPP
+		yyyyyyyyyy
+		tttttttttt
+		hhhhhhhhhh
+		oooooooooo
+		nnnnnnnnnn
+	\end{minted}
+	
+	\subsection*{CVIČENIA}
+	
+	Výpis hviezdičiek
 
 \end{document}
